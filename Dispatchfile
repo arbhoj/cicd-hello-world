@@ -4,6 +4,8 @@ resource "src-git": {
   param revision: "$(context.git.commit)"
 }
 
+
+
 resource "docker-image": {
   type: "image"
   param url: "arvindbhoj/hello-world:$(context.build.name)"
@@ -45,19 +47,19 @@ task "build": {
 
 actions: [
   {
-    tasks: ["build"]
+    tasks: ["build","deploy"]
     on push: {
       branches: ["master"]
     }
   },
   {
-    tasks: ["build"]
+    tasks: ["build","deploy"]
     on pull_request: {
       chatops: ["build"]
     }
   },
   {
-    tasks: ["build"]
+    tasks: ["build","deploy"]
     on tag: {
       names: ["*"]
     }
