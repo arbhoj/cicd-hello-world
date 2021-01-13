@@ -23,22 +23,6 @@ task "test": {
   ]
 }
 
-task "deploy": {
-  inputs: ["docker-image", "src-git"]
-  steps: [
-    {
-      name: "update-gitops-repo"
-      image: "mesosphere/update-gitops-repo:1.2.0"
-      workingDir: "/workspace/gitops-git"
-      args: [
-        "-git-revision=$(context.git.commit)",
-        "-substitute=imageName=arvindbhoj/hello-world@$(inputs.resources.docker-image.digest)",
-        "-scm-provider=github"
-      ]
-    }
-  ]
-}
-
 task "build": {
   inputs: ["src-git"]
   outputs: ["docker-image"]
@@ -60,19 +44,19 @@ task "build": {
 
 actions: [
   {
-    tasks: ["build","deploy"]
+    tasks: ["build"]
     on push: {
       branches: ["master"]
     }
   },
   {
-    tasks: ["build","deploy"]
+    tasks: ["build"]
     on pull_request: {
       chatops: ["build"]
     }
   },
   {
-    tasks: ["build","deploy"]
+    tasks: ["build"]
     on tag: {
       names: ["*"]
     }
